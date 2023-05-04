@@ -1,0 +1,19 @@
+{
+	"name": "forts-api-extention-server",
+	"description": "Language server of the forts API langage",
+	"version": "0.1.0",
+	"author": "TretinV3",
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TretinV3/fortsAPIExtention"
+	},
+	"dependencies": {
+		"vscode-languageserver": "^8.1.0",
+		"vscode-languageserver-textdocument": "^1.0.8"
+	},
+	"scripts": {}
+}
