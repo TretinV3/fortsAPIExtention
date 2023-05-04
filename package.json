@@ -8,6 +8,7 @@
 		"type": "git",
 		"url": "https://github.com/TretinV3/fortsAPIExtention"
 	},
+	"icon": "icon.png",
 	"publisher": "TretinV3",
 	"categories": [ "Programming Languages", "Snippets" ],
 	"keywords": [
