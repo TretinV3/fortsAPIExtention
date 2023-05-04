@@ -1,5 +1,5 @@
 {
-	"name": "forst-api-extention",
+	"name": "forts-api-extention",
 	"description": "A extention for the forts API",
 	"author": "TretinV3",
 	"license": "MIT",
@@ -8,8 +8,8 @@
 		"type": "git",
 		"url": "https://github.com/TretinV3/fortsAPIExtention"
 	},
-	"publisher": "vscode-samples",
-	"categories": [],
+	"publisher": "TretinV3",
+	"categories": [ "Programming Languages", "Snippets" ],
 	"keywords": [
 		"forts",
 		"forrts api",
