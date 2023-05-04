@@ -24,7 +24,10 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 
-import * as fortsDocumentationAPI from './data.json';
+import * as fortsDocumentationAPI from './data/functions.json';
+import onSignatureHelp from './signature';
+import onCompletion, { onCompletionResolve } from './completion';
+import onHover from './hover';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -42,6 +45,8 @@ let hasDiagnosticRelatedInformationCapability = false;
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
+
+	connection.console.log(params.workspaceFolders?.map(w => w.name + " " + w.uri).join(', ') || '');
 
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
@@ -200,121 +205,14 @@ connection.onDidChangeWatchedFiles(_change => {
 	connection.console.log('We received an file change event');
 });
 
-function getFunctionName(uri: string, line: any, pos: number) {
-	const text = documents.get(uri)?.getText({
-		start: { line: line, character: 0 },
-		end: { line: line, character: 10000 }
-	}) || '';
-
-	return getWordAt(text, pos);
-}
-
-function getWordAt(string:string, char: number){
-    const words = string.split(' ');
-
-    let charIndex = 0;
-    let i = 0;
-    let last = '';
-    while(charIndex < char){
-        last = words[i] || '';
-        charIndex += last.length + 1;
-        i++;
-    }
-
-    return last;
-}
-
-connection.onSignatureHelp(
-	({ textDocument, position }): SignatureHelp => {
-
-		if(!documents.get(textDocument.uri)?.getText().startsWith('--- forts script API ---')) return {signatures : []};
 
 
-		const fonctionName = getFunctionName(textDocument.uri, position.line, position.character)?.split('(')[0];
-		if (fonctionName && Object.keys(fortsDocumentationAPI).includes(fonctionName)) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			//@ts-ignore
-			const data = fortsDocumentationAPI[fonctionName];
+connection.onSignatureHelp(d => onSignatureHelp(documents, d));
 
-			const doc: MarkupContent = {
-				kind: MarkupKind.Markdown,
-				value:
-					`### ${fonctionName}` + '\n' +
-					data.description + '\n' +
-					"```lua\n" + data.documentation[1] + "\n```"
+connection.onCompletion(d => onCompletion(documents, d));
+connection.onCompletionResolve(d => onCompletionResolve(d));
 
-			};
-			return {
-				signatures: [
-					{
-						label: data.documentation[0],
-						documentation: doc
-					}
-				]
-			};
-		}
-		return { signatures: [] };
-	}
-);
-
-// This handler provides the initial list of the completion items.
-connection.onCompletion(
-	({textDocument, position}): CompletionItem[] => {
-		if(!documents.get(textDocument.uri)?.getText().startsWith('--- forts script API ---')) return [];
-
-		return Object.keys(fortsDocumentationAPI).map((k, i) => {
-			return {
-				label: k,
-				kind: CompletionItemKind.Function,
-				data: i
-			};
-		});
-	}
-);
-
-connection.onHover(({position, textDocument}) => {
-
-	if(!documents.get(textDocument.uri)?.getText().startsWith('--- forts script API ---')) return;
-
-	const fonctionName = getFunctionName(textDocument.uri, position.line, position.character).split('(')[0];
-
-	if (fonctionName && Object.keys(fortsDocumentationAPI).includes(fonctionName)) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		//@ts-ignore
-		const data = fortsDocumentationAPI[fonctionName];
-
-
-		const doc: MarkupContent = {
-			kind: MarkupKind.Markdown,
-			value:
-				`### ${fonctionName}` + '\n' +
-				data.description + '\n' +
-				"```lua\n" + data.documentation[1] + "\n```"
-		};
-
-		return {
-			contents: doc,
-		};
-	}
-
-	return null;
-});
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-connection.onCompletionResolve(
-	(item: CompletionItem): CompletionItem => {
-
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		//@ts-ignore
-		const functionData = fortsDocumentationAPI[Object.keys(fortsDocumentationAPI)[item.data]];
-
-		item.detail = functionData.description;
-		item.documentation = functionData.documentation[0];
-
-		return item;
-	}
-);
+connection.onHover(d => onHover(documents, d));
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
