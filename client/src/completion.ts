@@ -1,7 +1,10 @@
 import * as fortsDocumentationAPI from './data/functions.json';
 import { TextDocument, Position, CompletionItemKind, CompletionItem } from 'vscode';
+import { shouldActivate } from './utils';
 
 export default function onCompletion(documents : TextDocument, position: Position) {
+
+	if(!shouldActivate(documents)) return;
 
 	return Object.keys(fortsDocumentationAPI).map((k, i) => {
 		return {

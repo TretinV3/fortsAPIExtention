@@ -1,10 +1,15 @@
 import { TextDocument, Position } from 'vscode';
-import { getFunctionName } from './utils';
+import { getFunctionName, shouldActivate } from './utils';
 import * as fortsDocumentationAPI from './data/functions.json';
 
 export default function onSignatureHelp(documents: TextDocument, position: Position) {
 
+	if(!shouldActivate(documents)) return;
+
 	const fonctionName = getFunctionName(documents, position);
+
+	//console.log(fonctionName);
+
 	if (fonctionName && Object.keys(fortsDocumentationAPI).includes(fonctionName)) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		//@ts-ignore

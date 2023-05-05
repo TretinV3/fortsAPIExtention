@@ -1,53 +1,18 @@
 
 
 import * as path from 'path';
-import { workspace, ExtensionContext, languages, extensions, commands } from 'vscode';
+import { workspace, ExtensionContext, languages, extensions, commands, window } from 'vscode';
 
 import onHover from './hover';
 import onCompletion, { onCompletionResolve } from './completion';
 import onSignatureHelp from './signature';
-
-//let client: LanguageClient;
+import * as FortsFunctionAPI from "./data/functions.json";
 
 export function activate(context: ExtensionContext) {
-	// // The server is implemented in node
-	// const serverModule = context.asAbsolutePath(
-	// 	path.join('server', 'out', 'server.js')
-	// );
 
-	// // If the extension is launched in debug mode then the debug server options are used
-	// // Otherwise the run options are used
-	// const serverOptions: ServerOptions = {
-	// 	run: { module: serverModule, transport: TransportKind.ipc },
-	// 	debug: {
-	// 		module: serverModule,
-	// 		transport: TransportKind.ipc,
-	// 	}
-	// };
-
-	// // Options to control the language client
-	// const clientOptions: LanguageClientOptions = {
-	// 	// Register the server for plain text documents
-	// 	documentSelector: [{ scheme: 'file', language: 'lua' }],
-	// 	synchronize: {
-	// 		// Notify the server about file changes to '.clientrc files contained in the workspace
-	// 		fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
-	// 	}
-	// };
-
-	// // Create the language client and start the client.
-	// client = new LanguageClient(
-	// 	'fortsAPILanguage',
-	// 	'Forts API langage',
-	// 	serverOptions,
-	// 	clientOptions
-	// );
-
-	// // Start the client. This will also launch the server
-	// client.start();
-
-	const disposable = commands.registerCommand('forts.library', () => {
+	const disposable = commands.registerCommand('forts.activate', () => {
 		setExternalLibrary("fortsAPI", true);
+		//setGlobal(Object.keys(FortsFunctionAPI));
 		console.log('activated');
 	});
 
@@ -60,27 +25,31 @@ export function activate(context: ExtensionContext) {
 		}
 	);
 
-	const completion = languages.registerCompletionItemProvider(
-		"lua",
-		{
-			// restrict string matching to avoid polluting fuzzy completion
-			provideCompletionItems: onCompletion,
-			resolveCompletionItem: onCompletionResolve,
-		},
-		"_",
-		// idk this feels ugly but it needs to trigger globalstring completion
-		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-	);
+	// const signature = languages.registerSignatureHelpProvider(
+	// 	"lua",
+	// 	{
+	// 		provideSignatureHelp: onSignatureHelp,
+	// 	}
+	// );
 
-	const signature = languages.registerSignatureHelpProvider(
-		"lua",
-		{
-			provideSignatureHelp: onSignatureHelp,
-		}
-	);
+	if (!extensions.getExtension('sumneko.lua')?.isActive) {
+		window.showWarningMessage('Please use the Lua extention from sumneko.lua, it will be a lot better.');
 
-	context.subscriptions.push(completion, hover, signature);
+		const completion = languages.registerCompletionItemProvider(
+			"lua",
+			{
+				provideCompletionItems: onCompletion,
+				resolveCompletionItem: onCompletionResolve,
+			},
+			"_",
+			"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+			"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+		);
+
+		context.subscriptions.push(hover, completion);
+	} else {
+		context.subscriptions.push(hover);
+	}
 }
 
 

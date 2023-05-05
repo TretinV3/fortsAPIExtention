@@ -1,10 +1,19 @@
-import { TextDocument, Position } from "vscode";
+import path = require('path');
+import { TextDocument, Position, Uri } from "vscode";
 
 
 export function getFunctionName(document: TextDocument, position: Position) {
 	const range = document.getWordRangeAtPosition(position);
 
 	return document.getText(range);
+}
+
+export function shouldActivate(document: TextDocument){
+    const isInFortModFolder = document.uri.path.includes('/Steam/steamapps/common/Forts/data/mods/');
+
+    const startWithHashbang = document.getText().startsWith('--- forts API ---');
+
+    return isInFortModFolder || startWithHashbang;
 }
 
 export function getWordAt(string:string, char: number){
