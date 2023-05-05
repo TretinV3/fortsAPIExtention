@@ -1,16 +1,13 @@
-import { CompletionItem, CompletionItemKind, CompletionParams, TextDocuments } from 'vscode-languageserver';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import * as fortsDocumentationAPI from './data.json';
+import * as fortsDocumentationAPI from './data/functions.json';
+import { TextDocument, Position, CompletionItemKind, CompletionItem } from 'vscode';
 
-export default function onCompletion(documents : TextDocuments<TextDocument>, {textDocument, position}: CompletionParams): CompletionItem[] {
-
-	if(!documents.get(textDocument.uri)?.getText().startsWith('--- forts script API ---')) return [];
+export default function onCompletion(documents : TextDocument, position: Position) {
 
 	return Object.keys(fortsDocumentationAPI).map((k, i) => {
 		return {
 			label: k,
 			kind: CompletionItemKind.Function,
-			data: i
+			data: k
 		};
 	});
 }
