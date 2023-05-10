@@ -10,7 +10,10 @@
 	},
 	"icon": "icon.png",
 	"publisher": "TretinV3",
-	"categories": [ "Programming Languages", "Snippets" ],
+	"categories": [
+		"Programming Languages",
+		"Snippets"
+	],
 	"keywords": [
 		"forts",
 		"forrts api",
@@ -28,6 +31,10 @@
 			{
 				"command": "forts.activate",
 				"title": "activate forts API"
+			},
+			{
+				"command": "forts.gendefault",
+				"title": "Generate a default for this file"
 			}
 		],
 		"configuration": {
@@ -70,5 +77,8 @@
 		"eslint": "^8.35.0",
 		"mocha": "^9.2.1",
 		"typescript": "^5.0.2"
+	},
+	"dependencies": {
+		"vscode": "^1.1.37"
 	}
 }

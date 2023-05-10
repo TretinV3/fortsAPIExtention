@@ -1,0 +1,11 @@
+{
+   "Selectable": "boolean",
+   "Category": "string",
+   "Priority": "number",
+   "SupportsMoonshot": "boolean",
+   "RequiresMoonshot": "boolean",
+   "SupportsHighSeas": "boolean",
+   "RequiresHighSeas": "boolean",
+   "AIFortSpecialisation": "boolean",
+   "Include": "string"
+}

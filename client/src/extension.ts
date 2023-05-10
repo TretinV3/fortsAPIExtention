@@ -4,7 +4,7 @@ import * as path from 'path';
 import { workspace, ExtensionContext, languages, extensions, commands, window } from 'vscode';
 
 import onHover from './hover';
-import onCompletion, { onCompletionResolve } from './completion';
+import onCompletion from './completion';
 import onSignatureHelp from './signature';
 import * as FortsFunctionAPI from "./data/functions.json";
 
@@ -17,6 +17,16 @@ export function activate(context: ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	const genDefaultCommand = commands.registerCommand('forts.gendefault', (e) => {
+		//setExternalLibrary("fortsAPI", true);
+		//setGlobal(Object.keys(FortsFunctionAPI));
+		console.log('gen', e);
+
+
+	});
+
+	context.subscriptions.push(genDefaultCommand);
 
 	const hover = languages.registerHoverProvider(
 		"lua",
@@ -32,23 +42,21 @@ export function activate(context: ExtensionContext) {
 	// 	}
 	// );
 
+	const completion = languages.registerCompletionItemProvider(
+		"lua",
+		{
+			provideCompletionItems: onCompletion,
+			//resolveCompletionItem: onCompletionResolve,
+		},
+		"_",
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+	);
+
+	context.subscriptions.push(hover, completion);
+
 	if (!extensions.getExtension('sumneko.lua')?.isActive) {
 		window.showWarningMessage('Please use the Lua extention from sumneko.lua, it will be a lot better.');
-
-		const completion = languages.registerCompletionItemProvider(
-			"lua",
-			{
-				provideCompletionItems: onCompletion,
-				resolveCompletionItem: onCompletionResolve,
-			},
-			"_",
-			"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-			"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-		);
-
-		context.subscriptions.push(hover, completion);
-	} else {
-		context.subscriptions.push(hover);
 	}
 }
 

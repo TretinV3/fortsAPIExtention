@@ -30,3 +30,9 @@ export function getWordAt(string:string, char: number){
 
     return last;
 }
+
+export function getFilePath(document: TextDocument){
+    const secondPart = document.uri.path.split("/Steam/steamapps/common/Forts/data/mods/")[1];
+
+    return secondPart.split('/').slice(1).join();
+}
