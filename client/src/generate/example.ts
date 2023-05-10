@@ -10,7 +10,7 @@ const mapping = {
 	'materials/building_materials.lua': 'building_materials.lua'
 };
 
-export default function genExemple(document: TextDocument, position: Position): CompletionItem {
+export default function genExample(document: TextDocument, position: Position): CompletionItem {
 
 	const filePath = getFilePath(document);
 	//console.log(filePath);
@@ -21,14 +21,14 @@ export default function genExemple(document: TextDocument, position: Position): 
 	const wordRange = document.getWordRangeAtPosition(position);
 
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const data = require(`../data/exemples/${mapping[filePath]}`).default as string || 'error';
+	const data = require(`../data/examples/${mapping[filePath]}`).default as string || 'error';
 	//console.log(data);
 
 	const snippet = new SnippetString(data);
 
 	return {
-		label: '#exemple',
-		detail: 'Generate a default exemple for your file',
+		label: '#example',
+		detail: 'Generate a default example for your file',
 		insertText: snippet,
 		kind: CompletionItemKind.Snippet,
 		range: new Range(wordRange.start.translate(0, -1), wordRange.end),

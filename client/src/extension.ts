@@ -19,16 +19,6 @@ export function activate(context: ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 
-	const genDefaultCommand = commands.registerCommand('forts.gendefault', (e) => {
-		//setExternalLibrary("fortsAPI", true);
-		//setGlobal(Object.keys(FortsFunctionAPI));
-		console.log('gen', e);
-
-
-	});
-
-	context.subscriptions.push(genDefaultCommand);
-
 	const hover = languages.registerHoverProvider(
 		"lua",
 		{
@@ -54,30 +44,22 @@ export function activate(context: ExtensionContext) {
 		//"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 	);
 
-	const worklistener = workspace.onDidChangeWorkspaceFolders((event) => {
-		event.added.forEach(w => {
-			if(IsInModdingFolder(w.uri)){
-				//
-				window.showInformationMessage('A Forts mod has been detected do you want to initialize the folder ?', { modal: true }, { title: 'Yes' }, { title: 'No' });
-
-
-			}
-		});
-
-	});
-
-	context.subscriptions.push(hover, completion, worklistener);
+	context.subscriptions.push(hover, completion);
 
 	(async () => {
-	//if(IsInModdingFolder( .uri)){
-		
-		const info = await window.showInformationMessage('A Forts mod has been detected do you want to initialize the folder ?', 'Yes', 'No');
-		
-		if(info == 'Yes'){
+		const statut = isLibraryEnable("fortsAPI");
+		if (statut == false) {
+
+			const info = await window.showInformationMessage('A Forts mod has been detected do you want to initialize the folder ?', 'Yes', 'No');
+
+			if (info == 'Yes') {
+				setExternalLibrary("fortsAPI", true);
+			}
+		}else if(statut == 'update'){
+			const info = await window.showInformationMessage('Updating Forts API');
+
 			setExternalLibrary("fortsAPI", true);
 		}
-
-	//}
 	})();
 
 }
@@ -86,6 +68,28 @@ export function activate(context: ExtensionContext) {
 function setGlobal(globals: string[]) {
 	const config = workspace.getConfiguration("Lua");
 	config.update("workspace.library", globals, false);
+}
+
+export function isLibraryEnable(folder: string) {
+	// console.log("setExternalLibrary", folder, enable);
+	const extensionId = "TretinV3.forts-api-extention";
+	const extensionPath = extensions.getExtension(extensionId)!.extensionPath;
+	// Use path.join to ensure the proper path seperators (\ for windows, / for anything else) are used.
+	const folderPath = path.join(extensionPath, "fortsAPI");
+	const config = workspace.getConfiguration("Lua");
+	const library: string[] = config.get("workspace.library")!;
+	// remove any older versions of our path e.g. "publisher.name-0.0.1"
+	for (let i = library.length - 1; i >= 0; i--) {
+		const el = library[i];
+		const isSelfExtension = el.includes(extensionId);
+		const isCurrentVersion = el.includes(extensionPath);
+		if (isSelfExtension && !isCurrentVersion) {
+			return 'update';
+		}
+	}
+	const index = library.indexOf(folderPath);
+
+	return index !== -1;
 }
 
 export function setExternalLibrary(folder: string, enable: boolean) {

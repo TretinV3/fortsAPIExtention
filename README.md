@@ -10,7 +10,8 @@ download the [extension](https://marketplace.visualstudio.com/items?itemName=Tre
 
 and the **Lua extention** (`ext install sumneko.lua`)
 
-then in your workspace open the command palette (ctrl + shift + p) and enter `activate forts API` this will activate the completion and other stuff but for the doc if your not working in `/Steam/steamapps/common/Forts/data/mods/` put AT THE VERY TOP of your file (line 1) `--- forts API ---` like that :
+Then in your workspace, if the extention doesn't dectect your mod, open the command palette (ctrl + shift + p) and enter `activate forts API` this will activate the completion and intellisense.
+For the doc if your not working in `/Steam/steamapps/common/Forts/data/mods/` (or in `/Steam/steamapps/workshop/content/410900/`) put AT THE VERY TOP of your file (line 1) `--- forts API ---` like that :
 ```lua
 --- forts API ---
 
@@ -21,9 +22,23 @@ then in your workspace open the command palette (ctrl + shift + p) and enter `ac
 - autocompletion
 - intellisense
 - doc on hover
+- example code
+
+### example code
+It's speed up the process : now with the `#example` snippet you will have up to **130** lines of code example for your current file
+
+actualy implemented :
+- mod.lua
+- weapons/weapon_list.lua
+- weapons/projectil_list.lua
+- devices/device_list.lua
+- material/building_materials.lua
 
 ## contributors
 - TretinV3
 
 ## come chat with us !
+
+Feel free to contact me on discord (TrétinV3#7056 for now) or in #⁠🛠-modding !
+
 https://discord.gg/forts

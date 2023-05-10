@@ -2,7 +2,7 @@ import * as fortsDocumentationAPI from './data/functions.json';
 import { TextDocument, Position, CompletionItemKind, CompletionItem, extensions, SnippetString } from 'vscode';
 import { shouldActivate } from './utils';
 import * as fortsModFileContent from './data/mod.json';
-import genExemple from './generate/exemple';
+import genExample from './generate/example';
 import genDefault from './generate';
 
 export default function onCompletion(document: TextDocument, position: Position): CompletionItem[] {
@@ -16,8 +16,8 @@ export default function onCompletion(document: TextDocument, position: Position)
 	const defaultResult = genDefault(document, position);
 	if (defaultResult) completionList.push(defaultResult);
 
-	const exempleResult = genExemple(document, position);
-	if (exempleResult) completionList.push(exempleResult);
+	const exampleResult = genExample(document, position);
+	if (exampleResult) completionList.push(exampleResult);
 
 
 

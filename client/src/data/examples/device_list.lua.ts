@@ -2,7 +2,7 @@
 
 export default `---@type Device
 local \${1:myNewDevice} = {
-    SaveName = \${1},
+    SaveName = "\${1}",
     FileName = "devices/\${1}",
     Icon = "hud-\${4:mynewdevice}-icon",
     Detail = "hud-\${4}-mynewdevice",

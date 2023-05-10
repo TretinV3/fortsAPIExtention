@@ -34,10 +34,6 @@
 			{
 				"command": "forts.activate",
 				"title": "activate forts API"
-			},
-			{
-				"command": "forts.gendefault",
-				"title": "Generate a default for this file"
 			}
 		],
 		"configuration": {
