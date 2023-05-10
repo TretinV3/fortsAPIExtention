@@ -8,8 +8,12 @@ export function getFunctionName(document: TextDocument, position: Position) {
 	return document.getText(range);
 }
 
+export function IsInModdingFolder(uri: Uri){
+    return uri.path.includes('/Steam/steamapps/common/Forts/data/mods/') || uri.path.includes('/Steam/steamapps/workshop/content/410900/');
+}
+
 export function shouldActivate(document: TextDocument){
-    const isInFortModFolder = document.uri.path.includes('/Steam/steamapps/common/Forts/data/mods/');
+    const isInFortModFolder = IsInModdingFolder(document.uri);
 
     const startWithHashbang = document.getText().startsWith('--- forts API ---');
 
@@ -34,5 +38,5 @@ export function getWordAt(string:string, char: number){
 export function getFilePath(document: TextDocument){
     const secondPart = document.uri.path.split("/Steam/steamapps/common/Forts/data/mods/")[1];
 
-    return secondPart.split('/').slice(1).join();
+    return secondPart.split('/').slice(1).join('/');
 }

@@ -14,6 +14,9 @@
 		"Programming Languages",
 		"Snippets"
 	],
+	"extensionDependencies": [
+        "sumneko.lua"
+    ],
 	"keywords": [
 		"forts",
 		"forrts api",

@@ -7,6 +7,7 @@ import onHover from './hover';
 import onCompletion from './completion';
 import onSignatureHelp from './signature';
 import * as FortsFunctionAPI from "./data/functions.json";
+import { IsInModdingFolder } from './utils';
 
 export function activate(context: ExtensionContext) {
 
@@ -48,16 +49,37 @@ export function activate(context: ExtensionContext) {
 			provideCompletionItems: onCompletion,
 			//resolveCompletionItem: onCompletionResolve,
 		},
-		"_",
-		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+		"#",
+		//"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+		//"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 	);
 
-	context.subscriptions.push(hover, completion);
+	const worklistener = workspace.onDidChangeWorkspaceFolders((event) => {
+		event.added.forEach(w => {
+			if(IsInModdingFolder(w.uri)){
+				//
+				window.showInformationMessage('A Forts mod has been detected do you want to initialize the folder ?', { modal: true }, { title: 'Yes' }, { title: 'No' });
 
-	if (!extensions.getExtension('sumneko.lua')?.isActive) {
-		window.showWarningMessage('Please use the Lua extention from sumneko.lua, it will be a lot better.');
-	}
+
+			}
+		});
+
+	});
+
+	context.subscriptions.push(hover, completion, worklistener);
+
+	(async () => {
+	//if(IsInModdingFolder( .uri)){
+		
+		const info = await window.showInformationMessage('A Forts mod has been detected do you want to initialize the folder ?', 'Yes', 'No');
+		
+		if(info == 'Yes'){
+			setExternalLibrary("fortsAPI", true);
+		}
+
+	//}
+	})();
+
 }
 
 
